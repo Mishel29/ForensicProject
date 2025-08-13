@@ -1,0 +1,24 @@
+# Preprocessing configuration
+input_dir: "data/raw"
+output_dir: "data/processed"
+databases:
+  - DB1
+  - DB2
+  - DB3
+  - DB4
+
+resolutions:
+  DB1: 500  # dpi
+  DB2: 569
+  DB3: 500
+  DB4: 500
+
+target_resolution: 500  # Target resolution for all images
+patch_size: 256  # Size for output patches
+
+augmentation:
+  rotation_range: [-30, 30]
+  noise_types:
+    optical: ["gaussian", "glare"]
+    capacitive: ["impulse", "gaussian"]
+    synthetic: ["speckle"]

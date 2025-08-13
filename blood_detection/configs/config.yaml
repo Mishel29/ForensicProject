@@ -1,0 +1,116 @@
+# Blood Detection Configuration
+# =============================
+
+# Dataset Configuration
+dataset:
+  path: "../data/raw/HyperBlood/"
+  train_images: ["E_1", "E_21"]  # E scenes for training (more complex backgrounds)
+  test_images: ["F_1", "F_1a"]   # F scenes for testing (white fabric background)
+  
+  # Data preprocessing
+  remove_noisy_bands: true
+  clean_damaged_lines: true
+  remove_uncertain_blood: true
+
+# Preprocessing Configuration
+preprocessing:
+  method: "etr"  # Options: "etr", "pca"
+  n_components: 50
+  patch_size: 9
+  
+  # ETR specific parameters
+  etr:
+    enhancement_factor: 0.1
+    n_iterations: 1
+    
+  # PCA specific parameters  
+  pca:
+    whiten: false
+
+# Model Configuration
+model:
+  name: "FE"  # Fast Extraction
+  architecture:
+    conv1_filters: 50
+    conv1_kernel_size: [5, 5]
+    conv2_filters: 100
+    conv2_kernel_size: [5, 5]
+    dense_units: 100
+    dropout_rate: 0.4
+    activation: "elu"
+  
+  # Training parameters
+  training:
+    epochs: 100
+    batch_size: 256
+    learning_rate: 0.001
+    optimizer: "adam"
+    loss: "categorical_crossentropy"
+    validation_split: 0.2
+    
+    # Callbacks
+    early_stopping:
+      monitor: "val_loss"
+      patience: 10
+      restore_best_weights: true
+      
+    reduce_lr:
+      monitor: "val_loss"
+      factor: 0.5
+      patience: 5
+      min_lr: 1e-7
+
+# Evaluation Configuration
+evaluation:
+  metrics: ["accuracy", "precision", "recall", "f1_score"]
+  test_split: 0.2
+  
+  # Cross validation
+  cv_folds: 5
+  
+  # Visualization
+  save_plots: true
+  plot_format: "png"
+  plot_dpi: 300
+
+# Class Configuration
+classes:
+  names:
+    0: "background"
+    1: "blood"
+    2: "ketchup" 
+    3: "artificial_blood"
+    4: "beetroot_juice"
+    5: "poster_paint"
+    6: "tomato_concentrate"
+    7: "acrylic_paint"
+    8: "uncertain_blood"
+  
+  # Classes to include in training (excluding background and uncertain)
+  training_classes: [1, 2, 3, 4, 5, 6, 7]
+  
+  # Target class for binary classification (if needed)
+  target_class: 1  # blood
+
+# Hardware Configuration
+hardware:
+  use_gpu: true
+  gpu_memory_growth: true
+  mixed_precision: false
+
+# Logging Configuration
+logging:
+  level: "INFO"
+  save_logs: true
+  log_file: "blood_detection.log"
+
+# Output Configuration
+output:
+  results_dir: "./results"
+  save_model: true
+  save_predictions: true
+  save_visualizations: true
+  
+  # Report generation
+  generate_report: true
+  report_format: "markdown"
